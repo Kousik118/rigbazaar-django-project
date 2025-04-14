@@ -1,0 +1,124 @@
+{# templates/profile.html #}
+{% extends 'base.html' %}
+{% load static %}
+<style>
+    .form-field-group.profile-pic-group a,
+    .form-field-group.profile-pic-group br {
+        display: none;
+    }
+</style>
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="profile-page-container"> {# Centering container #}
+    <div class="profile-card">
+
+        {# --- Profile Header --- #}
+        <div class="profile-header">
+             {% if user.profile_pic and user.profile_pic.name != 'default_avatar.png' %}
+                <img src="{{ user.profile_pic.url }}" alt="Profile Picture" class="profile-avatar">
+            {% else %}
+                <img src="{% static 'images/default_avatar.png' %}" alt="Default Profile Picture" class="profile-avatar">
+            {% endif %}
+            <h2 class="profile-username">{{ user.username }}</h2>
+            <p class="profile-email">{{ user.email }}</p>
+            {# Optional: Add join date or other info #}
+            {# <p class="profile-joindate">Member since: {{ user.date_joined|date:"M d, Y" }}</p> #}
+        </div>
+         {# --- End Profile Header --- #}
+
+         <hr class="profile-divider"> {# Visual Separator #}
+
+         {# --- Profile Form Section --- #}
+        <div class="profile-form-section">
+            <h3>Update Your Details</h3>
+            {# Display non-field errors if any #}
+            {% if form.non_field_errors %}
+                <div class="form-errors non-field-errors">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" class="profile-update-form">
+                {% csrf_token %}
+
+                {# Render fields manually for better styling & icons #}
+                <div class="form-field-group">
+                    <label for="{{ form.username.id_for_label }}"><i class="fa-solid fa-user-tag"></i> Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}<div class="form-errors">{{ form.username.errors }}</div>{% endif %}
+                </div>
+
+                <div class="form-field-group">
+                     <label for="{{ form.email.id_for_label }}"><i class="fa-solid fa-envelope"></i> Email</label>
+                     {# Make email read-only if needed via form definition or here #}
+                     {{ form.email }}
+                     {% if form.email.errors %}<div class="form-errors">{{ form.email.errors }}</div>{% endif %}
+                 </div>
+
+                 <div class="form-field-group">
+                     <label for="{{ form.phone.id_for_label }}"><i class="fa-solid fa-phone"></i> Phone</label>
+                     {{ form.phone }}
+                     {% if form.phone.errors %}<div class="form-errors">{{ form.phone.errors }}</div>{% endif %}
+                 </div>
+
+                 <div class="form-field-group">
+                     <label for="{{ form.first_name.id_for_label }}"><i class="fa-solid fa-id-card-clip"></i> First Name</label>
+                     {{ form.first_name }}
+                     {% if form.first_name.errors %}<div class="form-errors">{{ form.first_name.errors }}</div>{% endif %}
+                 </div>
+
+                 <div class="form-field-group">
+                     <label for="{{ form.last_name.id_for_label }}"><i class="fa-solid fa-id-card-clip"></i> Last Name</label>
+                     {{ form.last_name }}
+                     {% if form.last_name.errors %}<div class="form-errors">{{ form.last_name.errors }}</div>{% endif %}
+                 </div>
+
+                {# --- Profile Picture Field Group with Custom Button --- #}
+                <div class="form-field-group profile-pic-group">
+                    <label><i class="fa-solid fa-image-portrait"></i> Profile Picture</label> {# General label #}
+
+                    {# Visually hidden file input - KEEP THIS! Give it an ID #}
+                    {{ form.profile_pic }}
+                    {# Add an ID to the actual input rendered by Django for easier JS targeting #}
+                    <script>
+                        (function() {
+                            let el = document.currentScript.previousElementSibling;
+                            while (el && el.tagName !== 'INPUT') {
+                                el = el.previousElementSibling; // Handle potential wrappers like <br> or ClearableFileInput widget stuff
+                            }
+                            if (el && el.tagName === 'INPUT') {
+                                el.id = 'id_profile_pic_input'; // Assign the ID
+                            }
+                        })();
+                    </script>
+
+                    {# Visible button to trigger the hidden input #}
+                    <button type="button" class="custom-file-upload-btn" id="upload_pic_button">
+                        {# Conditional button text #}
+                        {% if user.profile_pic and user.profile_pic.name != 'default_avatar.png' %}
+                            <i class="fa-solid fa-camera-rotate"></i> Change Picture
+                        {% else %}
+                            <i class="fa-solid fa-upload"></i> Upload Picture
+                        {% endif %}
+                    </button>
+
+                    {# Span to display the selected filename #}
+                    <span class="selected-filename" id="selected_filename"></span>
+
+                    {# REMOVED the "Currently:" link as requested #}
+
+                    {# Display errors #}
+                    {% if form.profile_pic.errors %}
+                         <div class="form-errors">{{ form.profile_pic.errors }}</div>
+                    {% endif %}
+                </div>
+                {# --- End Profile Picture Field Group --- #}
+
+
+                <button type="submit" class="profile-submit-btn"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+            </form>
+        </div>
+         {# --- End Profile Form Section --- #}
+
+    </div> {# End profile-card #}
+</div> {# End profile-page-container #}
+{% endblock %}

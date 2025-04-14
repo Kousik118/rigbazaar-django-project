@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+    <h1>Complete Your Payment</h1>
+
+    {# Check if order and total_amount_paise are passed correctly #}
+    {% if order and total_amount_paise %}
+        <p>Total Amount Due: ₹{{ order.total_amount|floatformat:2 }}</p> {# Display formatted amount #}
+
+        {# Button to trigger Razorpay #}
+        <button id="razorpay-btn" class="details-btn">Pay with Razorpay (₹{{ order.total_amount|floatformat:2 }})</button>
+
+        {# Hidden form to submit payment details after Razorpay success #}
+        <form action="{% url 'app1:payment_success' %}" method="POST" id="payment-form" style="display: none;">
+            {% csrf_token %}
+            <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+            <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+            <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+        </form>
+
+        <p style="margin-top: 1rem;">
+            <a href="{% url 'app1:checkout' %}">Back to Checkout Details</a>
+        </p>
+
+    {% else %}
+        <p>Error: Payment details are missing. Please return to checkout.</p>
+        <p><a href="{% url 'app1:checkout' %}">Back to Checkout</a></p>
+    {% endif %}
+
+{% endblock %}
+
+{% block extra_scripts %}
+    {# Only include Razorpay script if payment details are available #}
+    {% if order and total_amount_paise %}
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script>
+            var options = {
+                "key": "{{ razorpay_key_id }}",  // Key ID from Razorpay dashboard
+                "amount": "{{ total_amount_paise }}", // Amount in paise
+                "currency": "INR",
+                "name": "Your Store Name", // Customize store name
+                "description": "Payment for Order #{{ order.id }}",
+                // "image": "{% static 'images/your_logo.png' %}",  // Optional: Replace with your logo
+                "order_id": "{{ order.razorpay_order_id }}", // Razorpay Order ID from view
+                "handler": function(response) {
+                    // Payment successful: populate hidden form and submit
+                    document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                    document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+                    document.getElementById('razorpay_signature').value = response.razorpay_signature;
+                    document.getElementById('payment-form').submit();
+                },
+                "prefill": {
+                    "name": "{{ request.user.get_full_name|default:request.user.username }}", // Use full name if available
+                    "email": "{{ request.user.email|default:'' }}", // Use email if available
+                    "contact": "{{ request.user.phone|default:'' }}" // Use phone if available and stored on Account model
+                },
+                "notes": {
+                    "address": "{{ order.shipping_address|escapejs }}" // Pass shipping address (escaped)
+                },
+                "theme": {
+                    "color": "#48c6ef" // Match your site theme
+                }
+                // Optional: Add handler for payment failure/modal close
+                // "modal": {
+                //     "ondismiss": function(){
+                //         console.log("Checkout form closed");
+                //         // Optionally redirect or show message if user closes modal
+                //         // window.location.href = "{% url 'app1:payment_failed' %}";
+                //     }
+                // }
+            };
+            try {
+                var rzp = new Razorpay(options);
+                document.getElementById('razorpay-btn').onclick = function(e) {
+                    rzp.open();
+                    e.preventDefault();
+                }
+            } catch (error) {
+                console.error("Error initializing Razorpay:", error);
+                // Optionally display an error message to the user
+                alert("Error initializing payment gateway. Please try again later.");
+            }
+        </script>
+    {% endif %}
+{% endblock %}

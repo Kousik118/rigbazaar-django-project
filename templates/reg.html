@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+    <form action="{% url 'app1:reg' %}" method="post" enctype="multipart/form-data" class="general-form-container">
+        <h1>Create Account</h1>
+        {% csrf_token %}
+
+        {# Render other fields individually for consistency #}
+        <p>
+            {{ form.username.label_tag }} {{ form.username }}
+            {% if form.username.errors %}<div class="form-errors">{{ form.username.errors }}</div>{% endif %}
+        </p>
+        <p>
+            {{ form.email.label_tag }} {{ form.email }}
+            {% if form.email.errors %}<div class="form-errors">{{ form.email.errors }}</div>{% endif %}
+        </p>
+         <p>
+            {{ form.phone.label_tag }} {{ form.phone }}
+            {% if form.phone.errors %}<div class="form-errors">{{ form.phone.errors }}</div>{% endif %}
+        </p>
+
+        {# --- Modified Password Field --- #}
+        <p>
+            {{ form.password.label_tag }}
+            <div class="password-input-wrapper">
+                {{ form.password }}
+                <i class="fa-solid fa-eye password-toggle-icon" id="togglePasswordReg"></i>
+            </div>
+            {% if form.password.errors %}<div class="form-errors">{{ form.password.errors }}</div>{% endif %}
+            {% if form.password.help_text %}<small class="form-help-text">{{ form.password.help_text }}</small>{% endif %}
+        </p>
+        {# --- End Modified Password Field --- #}
+
+        {# --- Modified Confirm Password Field --- #}
+        <p>
+            {{ form.confirm_password.label_tag }}
+            <div class="password-input-wrapper">
+                {{ form.confirm_password }}
+                 <i class="fa-solid fa-eye password-toggle-icon" id="toggleConfirmPasswordReg"></i>
+             </div>
+             {% if form.confirm_password.errors %}<div class="form-errors">{{ form.confirm_password.errors }}</div>{% endif %}
+         </p>
+         {# --- End Modified Confirm Password Field --- #}
+
+
+        <input type="submit" value="Register">
+    </form>
+    <p class="form-sublink">
+        Already have an account? <a href="{% url 'app1:login' %}">Login here</a>
+    </p>
+{% endblock %}

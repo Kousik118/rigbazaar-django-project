@@ -1,0 +1,49 @@
+{# templates/nav.html #}
+{% load static %}
+<nav class="navbar">
+    <div class="nav-logo">
+        <a href="{% url 'app1:home' %}">
+            <img src="{% static 'images/rigbazaar_logo.svg' %}" alt="RigBazaar Logo" class="svg-logo">
+        </a>
+    </div>
+
+    <div class="nav-search-container">
+       <form class="search-form" method="get" action="{% url 'app1:search' %}">
+            <input type="text" name="q" placeholder="Search products..." value="{{ request.GET.q }}">
+            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+    </div>
+
+    <ul class="nav-links">
+        {# Links visible to EVERYONE #}
+        <li><a href="{% url 'app1:home' %}"><i class="fa-solid fa-house"></i><span class="nav-text">Home</span></a></li>
+        {# Maybe a general 'Shop' link here #}
+
+        {# Links specific to LOGGED-IN users #}
+        {% if request.user.is_authenticated %}
+            <li><a href="{% url 'app1:order_history' %}"><i class="fa-solid fa-receipt"></i><span class="nav-text">Orders</span></a></li>
+            <li>
+                <a href="{% url 'app1:cart' %}" class="nav-cart-link">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="nav-text">Cart</span>
+                    <span id="cart-count" class="cart-badge">{{ request.session.cart|length }}</span> {# Shows 0 if session cart is empty #}
+                </a>
+            </li>
+             <li><a href="{% url 'app1:profile' %}"><i class="fa-solid fa-user"></i><span class="nav-text">Profile</span></a></li>
+            <li><a href="{% url 'app1:logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i><span class="nav-text">Logout</span></a></li>
+        {# Links specific to ANONYMOUS users #}
+        {% else %}
+            <li>
+                {# Link Cart icon to login page, passing current page as 'next' #}
+                <a href="{% url 'app1:login' %}?next={{ request.path }}" class="nav-cart-link">
+                     <i class="fa-solid fa-cart-shopping"></i>
+                     <span class="nav-text">Cart</span>
+                     {# Maybe don't show count badge or show 0 for anonymous users #}
+                     {# <span id="cart-count" class="cart-badge">0</span> #}
+                 </a>
+             </li>
+            <li><a href="{% url 'app1:login' %}?next={{ request.path }}"><i class="fa-solid fa-arrow-right-to-bracket"></i><span class="nav-text">Login</span></a></li>
+            <li><a href="{% url 'app1:reg' %}"><i class="fa-solid fa-user-plus"></i><span class="nav-text">Register</span></a></li>
+        {% endif %}
+    </ul>
+</nav>

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+    <div class="product-detail-container"> {# Main container class #}
+        <div class="product-images"> {# Image section class #}
+            {% with first_image=product.images.first %}
+                {% if first_image %}
+                    <img id="mainImage" src="{{ first_image.image.url }}" class="main-image" alt="{{ product.name }} main image">
+                {% else %}
+                    {# Add default image handling if necessary #}
+                {% endif %}
+            {% endwith %}
+            {% if product.images.count > 1 %} {# Check count > 1 for thumbnails #}
+            <div class="thumbnails">
+                {% for image in product.images.all %}
+                    <img src="{{ image.image.url }}" onclick="setMainImage(this.src)" alt="{{ product.name }} thumbnail {{ forloop.counter }}">
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="product-details"> {# Details section class #}
+            <h2>{{ product.name }}</h2>
+            <p class="price">{{ product.price|floatformat:2 }}</p> {# Using floatformat #}
+            <p class="category">Category: {{ product.get_category_display }}</p>
+
+            {# Stock status class #}
+            {% if product.stock > 0 %}
+    <p class="stock-status in-stock">Stock: {{ product.stock }} available</p>
+    {# --- OLD LINK --- #}
+    {# <a href="{% url 'app1:add_to_cart' product.pk %}" class="details-btn">Add to Cart</a> #}
+
+    {# --- NEW BUTTON (to use AJAX) --- #}
+    <button type="button"
+            class="details-btn add-to-cart-btn" {# Add the magic class #}
+            data-product-id="{{ product.pk }}" {# Add data attribute #}
+            data-url="{% url 'app1:add_to_cart' product.pk %}"> {# Add data attribute #}
+        Add to Cart
+    </button>
+ {% else %}
+    <p class="stock-status out-of-stock"><strong>Out of Stock</strong></p>
+    <span class="details-btn disabled">Add to Cart</span> {# Disabled state #}
+ {% endif %}
+
+            <div class="description"> {# Description section class #}
+                <h3 style="margin-top: 1.5rem;">Description</h3>
+                <p>{{ product.description|linebreaks }}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        // Simple function to change the main image source
+        function setMainImage(src) {
+            const mainImageElement = document.getElementById('mainImage');
+            if (mainImageElement) {
+                mainImageElement.src = src;
+            }
+        }
+    </script>
+{% endblock %}

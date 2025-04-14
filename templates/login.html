@@ -1,0 +1,42 @@
+{# templates/login.html #}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <form action="" method="post" class="general-form-container">
+        <h1>Login</h1>
+        {% csrf_token %}
+
+        {# Assuming form renders username field first as <p> #}
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        {% if form.username.errors %}
+            <div class="form-errors">{{ form.username.errors }}</div>
+        {% endif %}
+
+        {# --- Modified Password Field --- #}
+        <p> {# Keep the paragraph if form.as_p is not used, or adjust if needed #}
+            {{ form.password.label_tag }}
+            <div class="password-input-wrapper"> {# Wrapper for positioning #}
+                {{ form.password }} {# Render the password input #}
+                {# Add unique ID to target specific icon/input #}
+                <i class="fa-solid fa-eye password-toggle-icon" id="togglePasswordLogin"></i>
+            </div>
+            {% if form.password.errors %}
+                <div class="form-errors">{{ form.password.errors }}</div>
+            {% endif %}
+        </p>
+        {# --- End Modified Password Field --- #}
+
+
+        {% if data %}
+            <p style="color: red;">{{ data }}</p>
+        {% endif %}
+        <input type="submit" value="Login">
+    </form>
+    <p class="form-sublink">
+        Don't have an account? <a href="{% url 'app1:reg' %}">Register here</a>
+    </p>
+{% endblock %}

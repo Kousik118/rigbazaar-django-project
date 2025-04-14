@@ -1,0 +1,26 @@
+{# templates/verify_otp.html #}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Verify OTP{% endblock %}
+
+{% block content %}
+    <h1>Verify Your Account</h1>
+
+    <p>An email with a 6-digit One-Time Password (OTP) has been sent to <strong>{{ email }}</strong>.</p>
+    <p>(Check your console window where `runserver` is running to see the email content and OTP, as we are using the Console Email Backend for testing).</p>
+    <p>Please enter the OTP below to complete your registration.</p>
+
+    {# Assuming form style applies from style.css #}
+    <form action="{% url 'app1:verify_otp' %}" method="post" style="margin-top: 1.5rem;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {# Messages will be displayed by base.html #}
+        <input type="submit" value="Verify OTP">
+    </form>
+
+    {# Optional: Add resend OTP functionality later #}
+    {# <p style="margin-top: 1rem;"><a href="{% url 'app1:resend_otp' %}">Resend OTP</a></p> #}
+
+    <p style="margin-top: 1rem;"><a href="{% url 'app1:reg' %}">Go back to Registration</a></p>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+    <h1>Checkout</h1>
+
+    {# Messages are now handled in base.html, no need to repeat here unless you want them in a specific spot #}
+
+    <div class="checkout-container">
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            {# Loop through cart items passed from view (might need adjustment based on view context) #}
+            {% for product_id, item in cart.items %}
+            <p>{{ item.name }} ({{ item.quantity }}) - ₹{{ item.price|floatformat:2 }}</p>
+            {% empty %}
+            <p>Your cart appears empty.</p> {# Add handling if cart is empty #}
+            {% endfor %}
+             <hr> {# Separator #}
+            <p><strong>Total: ₹{{ total_amount|floatformat:2 }}</strong></p>
+        </div>
+
+        <div class="form-container">
+            <h2>Shipping & Billing Details</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Proceed to Payment</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

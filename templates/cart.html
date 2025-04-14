@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %} {# Assuming you have custom_filters defined for 'mul' #}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block content %}
+    <h1>Shopping Cart</h1>
+    <div class="cart-container cart-total"> {# Added cart-total for potential styling #}
+        {% if cart_items %}
+            {% for item in cart_items %}
+                <div class="cart-item">
+                    <img src="{{ item.image|default_if_none:'#' }}" alt="{{ item.name }}" style="max-height: 80px; margin-right: 1rem;"> {# Added style directly for clarity #}
+                    <div>
+                        <h3>{{ item.name }}</h3>
+                        <p>Price: ₹{{ item.price|floatformat:2 }}</p>
+                        <form method="post" action="{% url 'app1:update_cart' item.product_id %}" style="display: inline-flex; align-items: center; gap: 5px;">
+                            {% csrf_token %}
+                            <label for="quantity_{{ item.product_id }}">Quantity:</label> {# Unique ID for label #}
+                            <input type="number" name="quantity" id="quantity_{{ item.product_id }}" value="{{ item.quantity }}" min="1" style="width: 4rem;">
+                            <button type="submit">Update</button>
+                        </form>
+                        <a href="{% url 'app1:remove_from_cart' item.product_id %}" style="margin-left: 10px;">Remove</a>
+                    </div>
+                    <p>Subtotal: ₹{{ item.price|mul:item.quantity|floatformat:2 }}</p> {# Use custom filter #}
+                </div>
+            {% endfor %}
+            <p><strong>Total Price: ₹{{ total_price|floatformat:2 }}</strong></p>
+            <a href="{% url 'app1:checkout' %}" class="details-btn" style="float: right;">Proceed to Checkout</a> {# Re-used button style #}
+         {% else %}
+            <p>Your cart is empty.</p>
+            <p><a href="{% url 'app1:home' %}">Continue Shopping</a></p>
+        {% endif %}
+    </div>
+{% endblock %}

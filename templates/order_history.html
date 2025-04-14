@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order History{% endblock %}
+
+{% block content %}
+    <h1>Order History</h1>
+
+    <div class="order-history-container"> {# Assuming styles for this exist in style.css #}
+        {% for order in orders %}
+        <div class="order-item"> {# Assuming styles for this exist in style.css #}
+            <h2>Order #{{ order.id }}</h2>
+            <p><strong>Date:</strong> {{ order.order_date }}</p>
+            <p><strong>Total:</strong> ₹{{ order.total_amount|floatformat:2 }}</p>
+            <p><strong>Status:</strong> {{ order.get_order_status_display }}</p>
+            {# Optionally show addresses here or just in details #}
+            {# <p>Shipping Address: {{ order.shipping_address }}</p> #}
+            <a href="{% url 'app1:order_detail' order.id %}">View Details</a>
+        </div>
+        {% empty %}
+        <p>You have no orders yet.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

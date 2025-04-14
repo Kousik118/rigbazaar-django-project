@@ -1,0 +1,71 @@
+{# templates/home.html #}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - Prebuilt PC Store{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="hero-content"> {# Add a container for content #}
+        {# Updated welcome message structure #}
+        <h1 class="hero-title">
+            {% if request.user.is_authenticated %}
+                Welcome back, {{ request.user.username }}!
+            {% else %}
+                Performance PCs, Expertly Built.
+            {% endif %}
+        </h1>
+        <p class="hero-tagline">Explore our curated collection of high-end laptops, custom prebuilt desktops, and essential PC components.</p>
+        {# --- Added Call to Action Button --- #}
+        <a href="#laptops" class="hero-cta-button">Explore Collection</a> {# Link to a relevant section or category page #}
+    </div>
+</section>
+
+    {# Removed filter-sort section for this home page layout #}
+
+    {# --- Laptops Section --- #}
+    <section class="category-section" id="laptops">
+        <h2>Latest Laptops</h2>
+        <div class="product-grid">
+            {% for product in laptops %}
+                {% include 'product_card_include.html' %} {# Use an include for the card #}
+            {% empty %}
+                <p>No laptops available at the moment.</p>
+            {% endfor %}
+        </div>
+        {# Optional: Link to a full category page #}
+        {# <div style="text-align: center; margin-top: 1rem;"><a href="{% url 'app1:category_view' 'laptop' %}">View All Laptops</a></div> #}
+    </section>
+
+    {# --- Prebuilt PCs Section --- #}
+    <section class="category-section" id="prebuilt-pcs">
+        <h2>Latest Prebuilt PCs</h2>
+        <div class="product-grid">
+            {% for product in prebuilts %}
+                 {% include 'product_card_include.html' %} {# Use an include for the card #}
+           {% empty %}
+                <p>No prebuilt PCs available at the moment.</p>
+            {% endfor %}
+        </div>
+         {# Optional: Link to a full category page #}
+         {# <div style="text-align: center; margin-top: 1rem;"><a href="{% url 'app1:category_view' 'prebuilt' %}">View All Prebuilt PCs</a></div> #}
+   </section>
+
+    {# --- PC Parts Section --- #}
+    <section class="category-section" id="pc-parts">
+        <h2>Latest PC Parts</h2>
+        <div class="product-grid">
+            {% for product in parts %}
+                 {% include 'product_card_include.html' %} {# Use an include for the card #}
+            {% empty %}
+                <p>No PC parts available at the moment.</p>
+            {% endfor %}
+        </div>
+         {# Optional: Link to a full category page #}
+         {# <div style="text-align: center; margin-top: 1rem;"><a href="{% url 'app1:category_view' 'part' %}">View All PC Parts</a></div> #}
+   </section>
+
+    {# Removed pagination section as we're showing limited items #}
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{# templates/product_card_include.html #}
+{% load static %}
+<div class="product-card">
+    {% if product.images.first %}
+    <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
+    {% else %}
+    <img src="{% static 'images/no-image.png' %}" alt="No Image Available">
+    {% endif %}
+    <h3>{{ product.name }}</h3>
+    <p class="price">₹{{ product.price }}</p>
+    <div class="button-container">
+        {% if product.stock > 0 %}
+            {# CHANGE 1: Changed <a> to <button type="button"> #}
+            {# CHANGE 2: Added class="add-to-cart-btn" #}
+            {# CHANGE 3: Added data-product-id="..." #}
+            {# CHANGE 4: Added data-url="..." #}
+            <button type="button"
+                    class="details-btn add-to-cart-btn"
+                    data-product-id="{{ product.pk }}"
+                    data-url="{% url 'app1:add_to_cart' product.pk %}">
+                Add to Cart
+            </button>
+        {% else %}
+            <span class="stock-info-btn out-of-stock">Out of Stock</span>
+        {% endif %}
+        <a href="{% url 'app1:product_detail' product.pk %}" class="details-btn view-details-btn">View Details</a>
+    </div>
+</div>

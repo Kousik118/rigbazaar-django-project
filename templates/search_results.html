@@ -1,0 +1,30 @@
+{# templates/search_results.html #}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Results for "{{ query }}"{% endblock %}
+
+{% block content %}
+    <h1>Search Results</h1>
+
+    {% if query %}
+        <p>Showing {{ result_count }} results for "<strong>{{ query }}</strong>"</p>
+
+        {# Reuse the product grid structure #}
+        <section class="product-grid" style="margin-top: 1rem;">
+            {% for product in results %}
+                {# Include the reusable product card template #}
+                {% include 'product_card_include.html' %}
+            {% empty %}
+                <p>No products found matching your search query.</p>
+            {% endfor %}
+        </section>
+
+    {% else %}
+        <p>Please enter a search term in the box above.</p>
+    {% endif %}
+
+    {# Optional: Add pagination if you expect many search results #}
+    {# {% include 'pagination_include.html' with page_obj=results %} #}
+
+{% endblock %}

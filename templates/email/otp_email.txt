@@ -1,0 +1,13 @@
+{# templates/email/otp_email.txt #}
+Subject: Your Account Verification OTP
+
+Hi there,
+
+Your One-Time Password (OTP) for registering your account is: {{ otp }}
+
+This OTP is valid for 5 minutes.
+
+If you did not request this, please ignore this email.
+
+Thanks,
+Your Team RigBazzar ❤️
