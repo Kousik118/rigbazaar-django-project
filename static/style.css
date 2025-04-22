@@ -1639,3 +1639,80 @@ form.general-form-container {
 .current-pic-link a {
     color: #007bff;
 }
+
+.cart_buttons,#remove_from_cart_button{
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    padding: 5px 10px 5px 10px;
+    font-size: 16.5px;
+}
+#cart_update_button{
+    background-color: royalblue;
+    color: white;
+    position: relative;
+    left: 170px;
+    top: -35px;
+}
+#remove_from_cart_button{
+    background-color: red;
+    text-decoration: none;
+    color:white;
+    position: relative;
+}
+#remove_from_cart_button:hover{
+    background-color: rgb(209, 4, 4);
+}
+#details-btn{
+    text-decoration: none;
+    font-size: 20px;
+    background-color: royalblue;
+    padding: 5px 10px 5px 10px;
+    border-radius: 20px;
+    color: white;
+    margin-top: -20px;
+}
+
+#details-btn:hover{
+    background-color: #0056b3;
+}
+
+.cart_buttons:active,#details-btn:active{
+    transform: scale(0.9);
+}
+#div{
+    border: none;
+    background-color: white;
+    width: fit-content;
+    height: 40px;
+    border-radius: 10px;
+    box-shadow:inset 4px 4px 2px black;
+}
+.quantity-input,.quantity-btn{
+    width: 50px;
+    height: 90%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-size: 25px;
+    text-align: center;
+    padding-top: 2px;
+}
+.quantity-btn:active{
+    color: red;
+} 
+button:hover{
+    cursor: pointer;
+}
+
+#price_text{
+    font-size: 22.5px;
+    position: relative;
+    right: -650px;
+}
+#qp{
+    border-left: 0.1px solid rgba(74, 74, 74, 0.452);
+}
+#qm{
+    border-right: 1px solid rgba(74, 74, 74, 0.377);
+}
